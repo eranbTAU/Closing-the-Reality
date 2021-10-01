@@ -5,4 +5,4 @@ In this paper, we propose a methodology to leverage the RealSim-Real framework. 
 predict the next state of the robot given the actions and the network was able to get a position error of 0.023(mm) on
 real data. After the model was trained, we apply the model in the simulation to increase the number of the train robots and we demonstrate on multi-agent task that learned policy from simulation and transferred to the real world. The potential applications of this work would be way finding and navigation
 for robots and autonomous vehicles.
-%![scheme](https://user-images.githubusercontent.com/77546342/129474852-a064b950-1b6a-4733-b957-25bab8618c7c.png)
+![intro](https://user-images.githubusercontent.com/77546342/135626181-67e7d53c-79e2-45a5-84dd-9359dd95338b.png)
