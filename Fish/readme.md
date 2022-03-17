@@ -4,4 +4,4 @@
 >2. 'harware' - MUR CAD model with hardware specification
 >3. 'mkr1000_MUR' - Arduino code for MUR communication and control
 
-<img src="https://github.com/eranbTAU/Closing-the-Reality/blob/c04c2e5f6bdd11faa1c48367e7805906d5d35819/Car/MGR_side.jpeg" width="400">
+<img src="https://github.com/eranbTAU/Closing-the-Reality/blob/fda97b0fbb814a17b456f8814f203fc199d4ecdb/Fish/hardware/side_view.jpg" width="300">
