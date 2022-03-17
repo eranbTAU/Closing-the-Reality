@@ -11,5 +11,4 @@ Training Reinforcement Learning (RL) policies for a robot requires an extensive 
 <img src="https://github.com/eranbTAU/Closing-the-Reality/blob/6048910f50c07263f16add6c11f7146b5621c00c/imgs/car_sim_2_slow.gif" width="300"> <img src="https://github.com/eranbTAU/Closing-the-Reality/blob/217205c9de04b2cd25f82ee4a3992bbd02d17044/imgs/car_real_2_slow.gif" width="300">
 
 #### Sim2Real for group of MURs
-<img src="https://github.com/eranbTAU/Closing-the-Reality/blob/231271f725f2d3eeb031b193c90412f0b5684f0c/imgs/fish_1.gif" width="300"> 
-<img src="https://github.com/eranbTAU/Closing-the-Reality/blob/231271f725f2d3eeb031b193c90412f0b5684f0c/imgs/fish_2.gif" width="300">
+<img src="https://github.com/eranbTAU/Closing-the-Reality/blob/231271f725f2d3eeb031b193c90412f0b5684f0c/imgs/fish_1.gif" width="300"> <img src="https://github.com/eranbTAU/Closing-the-Reality/blob/231271f725f2d3eeb031b193c90412f0b5684f0c/imgs/fish_2.gif" width="300">
