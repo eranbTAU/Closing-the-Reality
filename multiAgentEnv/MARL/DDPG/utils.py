@@ -22,12 +22,3 @@ def save(data, filename):
 def load(file_name):
     data = pickle.load(file=open(file_name, "rb"))
     return data
-
-def modify_action(action):
-    '''
-    express only possitive actions
-    [0,1] --> [0.5, 1]
-    '''
-    action = (action + 1) / 2
-    action = np.clip(action, 0.5, 1)
-    return action
