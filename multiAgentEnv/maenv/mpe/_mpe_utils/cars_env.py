@@ -7,24 +7,8 @@ from gym.utils import seeding
 from maenv import ParallelEnv
 from maenv.utils import wrappers
 from maenv.utils.agent_selector import agent_selector
-# from maenv.utils import from_parallel
 from .._mpe_utils.utils import load_params, rotate_2D, clip_angle
 
-
-
-# def env():
-#     '''
-#     The env function wraps the environment in 3 wrappers by default. These
-#     wrappers contain logic that is common to many pettingzoo environments.
-#     We recommend you use at least the OrderEnforcingWrapper on your own environment
-#     to provide sane error messages. You can find full documentation for these methods
-#     elsewhere in the developer documentation.
-#     '''
-#     env = raw_env()
-#     env = wrappers.CaptureStdoutWrapper(env)
-#     env = wrappers.ClipOutOfBoundsWrapper(env)
-#     env = wrappers.OrderEnforcingWrapper(env)
-#     return env
 
 def make_env(raw_env):
     def env(**kwargs):
@@ -54,7 +38,7 @@ class ParallelCarEnv(ParallelEnv):
         These attributes should not be changed after initialization.
         '''
         # calc some constants
-        params = load_params('/home/roblab1/PycharmProjects/MultiAgentEnv/maenv/mpe/_mpe_utils/car_config.yaml')
+        params = load_params('.../maenv/mpe/_mpe_utils/car_config.yaml')
         x_bounds, y_bounds = params['scalers']['x_bounds'], params['scalers']['y_bounds']
         to_mm = params['scalers']['to_mm']
         x_size, y_size = (x_bounds[1] - x_bounds[0]) * to_mm, (y_bounds[1] - y_bounds[0]) * to_mm
@@ -188,40 +172,6 @@ class ParallelCarEnv(ParallelEnv):
         add noise, time-dependent actions etc...
         '''
         agent.action.u = action
-
-        # agent.action.c = np.zeros(self.world.dim_c)
-        # if agent.movable:
-        #     # physical action
-        #     agent.action.u = np.zeros(self.world.dim_p)
-        #     if self.continuous_actions:
-        #         # Process continuous action as in OpenAI MPE
-        #         agent.action.u[0] += action[0][1] - action[0][2]
-        #         agent.action.u[1] += action[0][3] - action[0][4]
-        #     else:
-        #         # process discrete action
-        #         if action[0] == 1:
-        #             agent.action.u[0] = -1.0
-        #         if action[0] == 2:
-        #             agent.action.u[0] = +1.0
-        #         if action[0] == 3:
-        #             agent.action.u[1] = -1.0
-        #         if action[0] == 4:
-        #             agent.action.u[1] = +1.0
-        #     sensitivity = 5.0
-        #     if agent.accel is not None:
-        #         sensitivity = agent.accel
-        #     agent.action.u *= sensitivity
-        #     action = action[1:]
-        # if not agent.silent:
-        #     # communication action
-        #     if self.continuous_actions:
-        #         agent.action.c = action[0]
-        #     else:
-        #         agent.action.c = np.zeros(self.world.dim_c)
-        #         agent.action.c[action[0]] = 1.0
-        #     action = action[1:]
-        # # make sure we used all elements of action
-        # assert len(action) == 0
 
     def _colide(self, obs):
         '''check whether agent is colided'''
