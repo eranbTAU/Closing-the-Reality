@@ -66,8 +66,6 @@ class ParallelCarEnv(ParallelEnv):
         self.state_space = Box(low=-np.float32(np.inf), high=+np.float32(np.inf), shape=(state_dim,),
                                       dtype=np.float32)
 
-        # self.agent_selection = agent_selector(self.world.agents)
-        # self.possible_agents = [a.name for a in self.world.agents]
 
         self.steps = 0
 
@@ -111,9 +109,6 @@ class ParallelCarEnv(ParallelEnv):
 
         return observations
 
-    # def observe(self, agent):
-    #     a = self.world.agents[0]
-    #     return self.scenario.observation(a, self.world)
 
     def step(self, actions):
         '''
