@@ -1,6 +1,5 @@
 import torch
 import numpy as np
-# import yaml
 import os
 from ..utils import load_params, get_scaler, get_rescaler
 
@@ -8,7 +7,7 @@ from ..utils import load_params, get_scaler, get_rescaler
 class ForwardModel():
     def __init__(self, robot_type=None):
         try:
-            filename = f'/home/roblab1/PycharmProjects/MultiAgentEnv/maenv/mpe/_mpe_utils/{robot_type}_config.yaml'
+            filename = f'.../maenv/mpe/_mpe_utils/{robot_type}_config.yaml'
             params = load_params(filename).get('forward_model')
         except FileNotFoundError:
             print(f"{filename} not found. Note that robot_type param should 'car' or 'fish' be defined")
@@ -16,7 +15,7 @@ class ForwardModel():
         self.model_name = params['fd_model']
         self.robot_type = robot_type
         self.device = set_device(params['fdm_device'])
-        self.dir = '/home/roblab1/PycharmProjects/MultiAgentEnv/maenv/mpe/_mpe_utils/forward_models'
+        self.dir = '.../maenv/mpe/_mpe_utils/forward_models'
 
         self.model = self.load_forward_model(params['fdm_input_dim'], params['fdm_output_dim'])
         self.model.to(self.device)
