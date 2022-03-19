@@ -2,13 +2,12 @@ import sys
 import os
 import numpy as np
 
-
-# print(os.getcwd())
 from config import get_config, parse_args, update_conf_file, save_yaml
 from utils import make_name_prefix
 from maenv.mpe.cars_v0 import parallel_car_env
 from agents import ddpg
 from car_trainer import Trainer
+
 
 '''
 car train main
