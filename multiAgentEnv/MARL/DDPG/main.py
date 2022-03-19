@@ -3,11 +3,6 @@ import os
 import numpy as np
 
 
-# p = os.path.abspath('..')
-# sys.path.insert(1, p)
-# sys.path.insert(1, "/home/roblab1/PycharmProjects/MultiAgentEnv/maenv")
-# os.chdir("/home/roblab1/PycharmProjects/MultiAgentEnv/")
-# os.chdir('../')
 # print(os.getcwd())
 from config import get_config, parse_args, update_conf_file, save_yaml
 from utils import make_name_prefix
