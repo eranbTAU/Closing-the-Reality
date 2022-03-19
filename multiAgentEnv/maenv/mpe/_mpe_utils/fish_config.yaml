@@ -1,8 +1,0 @@
-scalers:
-  to_mm: 2.37854
-  x_bounds:
-  - 35
-  - 765
-  y_bounds:
-  - 130
-  - 490
