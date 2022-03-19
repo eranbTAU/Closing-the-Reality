@@ -24,7 +24,6 @@ class Trainer(object):
         self.max_steps = self.env_params['max_steps']
         self.render = self.env_params['render']
 
-
     def run(self, env, agent):
         if self.gen_params['is_train']:
             print('starting training mode...')
@@ -65,40 +64,6 @@ class Trainer(object):
 
     def policy_eval(self, env, agent):
         raise NotImplementedError
-        # if self.params['to_load']:
-        #     print('loading saved models...')
-        #     self.agent.load_models()
-        #
-        # agents = self.env.possible_agents
-        # actions = {name: None for name in agents}
-        # actions_ = {name: None for name in agents}
-        # colide = 'colide'
-        # out_of_box = 'out'
-        #
-        # for episode in range(1, self.episodes + 1):
-        #     self.agent.noise.reset()
-        #     dones = {}
-        #     infos = {}
-        #     time_step = 1
-        #
-        #     obs = self.env.reset()
-        #     if self.render:
-        #         self.env.render(mode='human')
-        #     # as long as no done and not out of bounds and timestep in range:
-        #     while not any(dones.values()) and not out_of_box in infos.values() and time_step <= self.max_steps:
-        #         for a in agents:
-        #             action = self.agent.choose_action(obs[a])  # outputs [-1,1]
-        #             action_ = self.modify_action(action)
-        #             actions_[a] = action_
-        #         obs_, rewards, dones, infos = self.env.step(actions_)
-        #         # if colide in infos.values():
-        #             # print('colided')
-        #         self.logger(actions, rewards, dones, infos)
-        #         obs = obs_
-        #         if self.render:
-        #             self.env.render(mode='human')
-        #             # time.sleep(0.05)
-        #         time_step += 1
 
 
 class Logger():
@@ -181,17 +146,13 @@ class Logger():
                 log['scores'] = self.ep_returns
                 log['q_values'] = self.q_log
             else:
-                log = load(self.log_filename)
-                # log['actions'] += self.action_log
+                log = load(self.log_filename
                 log['rewards'] += self.reward_log
-                # log['infos'] += self.info_log
                 log['scores'] = self.ep_returns
                 log['q_values'] += self.q_log
             save(log, self.log_filename)
-
-            # self.action_log = []
+                           
             self.reward_log = []
-            # self.info_log = []
             self.q_log = []
 
         self.report()
@@ -232,29 +193,11 @@ class Logger():
     def finish(self):
         name = os.path.split(self.dir)[0]
 
-        # self.plot_learning_curve(self.ep_returns, list(range(1, self.episode + 1)), self.report_every,
-        #                          os.path.join(self.dir, self.mode + '_vs_ep_' + self.file_name))
-
         self.plot_learn_curve(self.ep_returns, self.train_steps, 10,
                                  os.path.join(self.dir,
                                               ('train' if self.is_training else 'eval') + '_vs_steps_' + self.dir_name))
 
-        # if self.is_training:
-        #     f = open(os.path.join(summary_dir, 'summary.txt'), "a")
-        #     f.write('name: ' + self.file_name + \
-        #             ' | forward_model: ' + self.params['forward_model'] + \
-        #             ' | mode: ' + self.mode + \
-        #             ' | best score: ' + str(self.best_score) + \
-        #             ' | rew_func: ' + self.params['reward_func'] + \
-        #             ' | alpha: ' + str(self.params['alpha']) + \
-        #             ' | beta: ' + str(self.params['beta']) + \
-        #             ' | gamma: ' + str(self.params['gamma']) + \
-        #             ' | tau: ' + str(self.params['tau']) + \
-        #             ' | episodes: ' + str(self.episode) + \
-        #             ' | agents: ' + str(self.num_agents) + \
-        #             ' | landmarks: ' + str(self.params['num_marks']) +'\n')
-        #     f.close()
-
+       
         print(f'saved in {name}')
         print('%d [hours] in total' % (round(self.elapsed_time / 60, 2)))
 
