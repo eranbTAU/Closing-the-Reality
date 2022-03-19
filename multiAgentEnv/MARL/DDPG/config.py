@@ -22,7 +22,7 @@ gets the parameters as arguments from the user and updates the config. file.
 
 def update_conf_file(args, save=True):
     params = vars(args)
-    config_file = os.path.join('/home/roblab1/PycharmProjects/MultiAgentEnv/maenv/mpe/_mpe_utils',
+    config_file = os.path.join('../maenv/mpe/_mpe_utils',
                                args.robot_type + '_config.yaml')
 
     if params['load_params'] is not None:
@@ -69,7 +69,7 @@ def get_config():
     parser.add_argument('--load_params', type=str,
                         default=None)
     parser.add_argument('--results_dir', type=str,
-                        default='/home/roblab1/PycharmProjects/MultiAgentEnv/MARL/train_results')
+                        default='../MARL/train_results')
     parser.add_argument('--use_same_dir', action='store_true')
     parser.add_argument('--robot_type', type=str, default="car", choices=["fish", "car"])
     parser.add_argument('--experiment_name', type=str, default='exp_name')
