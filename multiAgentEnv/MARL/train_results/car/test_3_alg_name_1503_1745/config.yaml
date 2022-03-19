@@ -1,0 +1,48 @@
+agent_params:
+  action_dim: 2
+  agent_device: cpu
+  algorithm: alg_name
+  alpha: 0.0001
+  batch_size: 32
+  beta: 0.001
+  buffer_size: 100000
+  fc_dims: 128
+  gamma: 0.99
+  load_policy: null
+  noise_sigma: 1.0
+  noise_theta: 3.0
+  obs_dim: 15
+  reward_divider: 5
+  state_dim: 18
+  tau: 0.001
+env_params:
+  env_name: env_name
+  episodes: 50
+  local_ratio: 1.0
+  max_steps: 150
+  num_agents: 5
+  num_landmarks: 1
+  render: true
+  reward_divider: 5
+  reward_func: rew1
+  seed: 12
+forward_model:
+  fd_model: model_Tue_Sep__26_3_21_12.pt
+  fdm_device: cpu
+  fdm_input_dim: 2
+  fdm_output_dim: 3
+  robot_type: car
+gen_params:
+  experiment_name: test_3
+  is_train: false
+  report_interval: 5
+  robot_type: car
+  save_dir: /home/roblab1/PycharmProjects/MultiAgentEnv/MARL/train_results/car/test_3_alg_name_1503_1745
+scalers:
+  to_mm: 1.89044
+  x_bounds:
+  - 125
+  - 670
+  y_bounds:
+  - 25
+  - 570
