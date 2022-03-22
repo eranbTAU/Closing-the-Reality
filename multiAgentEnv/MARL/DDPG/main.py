@@ -30,10 +30,20 @@ def main(args):
                          seed=dict_params['env_params']['seed'],
                          local_ratio=dict_params['env_params']['local_ratio'])
 
+    # get dimensions
     env_p.reset()
     dict_params['agent_params']['action_dim'] = env_p.action_spaces['agent_0'].shape[0]
     dict_params['agent_params']['obs_dim'] = env_p.observation_spaces['agent_0'].shape[0]
     dict_params['agent_params']['state_dim'] = env_p.state_space.shape[0]
+    
+    # reward baseline
+    if all_args.reward_scaler is None:
+        reward_baseline = average_total_reward(
+            parallel_car_env(max_cycles=all_args.max_steps,
+                             seed=all_args.seed,
+                             local_ratio=all_args.local_ratio),
+            max_episodes=20, max_steps=100000)
+        dict_params['env_params']['reward_scaler'] = abs(float(reward_baseline))
 
     # create directories
     if all_args.use_same_dir:
@@ -59,7 +69,7 @@ def main(args):
     agent = ddpg.Agent(dict_params)
 
     # run session
-    trainer = Trainer(dict_params, parallel_car_env)
+    trainer = Trainer(dict_params)
     trainer.run(env_p, agent)
 
 if __name__ == "__main__":
