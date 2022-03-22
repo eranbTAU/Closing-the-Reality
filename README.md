@@ -1,6 +1,7 @@
 What's included:
 - */Car* - MGR CAD and data based forward-dynamics model training resources.
 - */Fish* - MUR CAD and data based forward-dynamics model training resources.
+- */GAN* - Synthetic forward-dynamics model training resources.
 - */MultiAgentEnv* - GYM style simulation environement with DDPG training algorithm implementation
 
 ## Real-to-Sim-to-Real: Learning Models for Homogeneous Multi-Agent Systems
