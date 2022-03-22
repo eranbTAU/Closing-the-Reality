@@ -35,16 +35,16 @@ def update_conf_file(args, save=True):
     if params['load_params'] is None:
         gen_params = ['robot_type', 'experiment_name', 'report_interval']
         env_params = ['env_name', 'num_agents', 'num_landmarks', 'reward_func', 'local_ratio', 'render', 'max_steps',
-                      'episodes', 'seed', 'reward_divider']
+                      'episodes', 'seed', 'reward_scaler']
         agent_params = ['algorithm', 'load_policy', 'alpha', 'beta', 'gamma', 'tau', 'fc_dims', 'batch_size',
-                        'buffer_size', 'noise_sigma', 'noise_theta', 'agent_device', 'reward_divider']
+                        'buffer_size', 'noise_sigma', 'noise_theta', 'agent_device']
         fm_params = ['fd_model', 'robot_type', 'fdm_device', 'fdm_input_dim', 'fdm_output_dim']
 
         config['gen_params'] = {key: params.get(key) for key in gen_params}
         config['env_params'] = {key: params.get(key) for key in env_params}
         config['agent_params'] = {key: params.get(key) for key in agent_params}
         config['forward_model'] = {key: params.get(key) for key in fm_params}
-
+        
     config['gen_params']['is_train'] = params.get('is_train')
 
     for item, doc in config.items():
@@ -91,7 +91,7 @@ def get_config():
     parser.add_argument('--num_landmarks', type=int, default=1)
     parser.add_argument('--render', action='store_true')
     parser.add_argument('--reward_func', type=str, default='rew1')
-    parser.add_argument('--seed', type=int, default=1000)
+    parser.add_argument('--seed', type=int, default=None)
 
     # agent parameters
     parser.add_argument('--algorithm', type=str, default='ddpg')
@@ -105,7 +105,7 @@ def get_config():
     parser.add_argument('--gamma', type=int, default=0.99)
     parser.add_argument('--noise_theta', type=float, default=3.)
     parser.add_argument('--noise_sigma', type=float, default=1.)
-    parser.add_argument('--reward_divider', type=int, default=5)
+    parser.add_argument('--reward_scaler', type=float, default=None)
     parser.add_argument('--tau', type=float, default=0.001)
 
     return parser
