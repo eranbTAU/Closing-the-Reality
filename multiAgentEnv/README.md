@@ -2,6 +2,7 @@
 Provided a MGR cars simulation implementation as described in the paper and a MARL training code. 
 ## simulator
 */maenv*
+
 The simulator is based on a modified [PettingZoo MPE](https://www.pettingzoo.ml/mpe) multi-agent environment.
 
 This is a parrallel settings env and the APIs are in GYM style.
