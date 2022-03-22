@@ -4,7 +4,9 @@
 - */GAN* - Synthetic forward-dynamics model training resources.
 - */MultiAgentEnv* - GYM style simulation environement with DDPG training algorithm implementation
 
-## Real-to-Sim-to-Real: Learning Models for Homogeneous Multi-Agent Systems (Anton Gurevich*, Eran Bamani* and Avishai Sintov)
+## Real-to-Sim-to-Real: Learning Models for Homogeneous Multi-Agent Systems
+(Anton Gurevich*, Eran Bamani* and Avishai Sintov)
+
 following the paper, we share here the used forward dynamics model of the robots, the hardware CAD and specifications and the resources of the multi-robot simulation for RL traning, as used and described in the paper.   
 
 #### abstract
