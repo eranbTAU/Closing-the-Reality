@@ -22,3 +22,6 @@ def save(data, filename):
 def load(file_name):
     data = pickle.load(file=open(file_name, "rb"))
     return data
+
+def dict_to_np(d, type):
+    return np.array(list(d.values()), dtype=type)
