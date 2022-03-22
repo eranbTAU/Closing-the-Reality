@@ -40,7 +40,7 @@ class Scenario(BaseScenario):
         diag_mm = diag_pix * to_mm
 
         # set reward function
-        self.calc_reward = get_reward_func(params['env_params']['reward_func'], diag_mm, params['env_params']['reward_divider'])
+        self.calc_reward = get_reward_func(params['env_params']['reward_func'], diag_mm)
 
         # bounding box size in [mm]
         self.x_size, self.y_size = (x_bounds[1] - x_bounds[0]) * to_mm, (y_bounds[1] - y_bounds[0]) * to_mm
