@@ -3,7 +3,7 @@
 reward function which was used in the paper.
 '''
 
-def rew1(diag_mm, divider):
+def rew1(diag_mm):
     '''
     :param diag_mm: maximum distance in [mm].
     :param divider: sacledown factor for reward.
@@ -21,9 +21,9 @@ def rew1(diag_mm, divider):
         for d in other_dist:
             if d < 150:
                 rew += -5 # neighbours collision
-        return rew / divider
+        return rew
     return f
 
 
-def get_reward_func(name, diag_mm, divider):
-    return globals()[name](diag_mm, divider)
+def get_reward_func(name, diag_mm):
+    return globals()[name](diag_mm)
