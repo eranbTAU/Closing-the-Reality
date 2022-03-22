@@ -20,13 +20,6 @@ class CriticNetwork(nn.Module):
         # filename extension:
         self.name = 'critic_'+name
         self.checkpoint_file = os.path.join(self.checkpoint_dir,self.name+'.pt')
-        # ---------structure---------
-        # self.fc1 = nn.Linear(self.input_dims, self.fc1_dim)
-        # self.fc2 = nn.Linear(self.fc1_dim, self.fc2_dim)
-        # self.bn1 = nn.LayerNorm(self.fc1_dim)
-        # self.bn2 = nn.LayerNorm(self.fc2_dim)
-        # self.action_value = nn.Linear(self.action_dim, self.fc2_dim)
-        # self.q = nn.Linear(self.fc2_dim,1)
 
         self.fc1 = nn.Linear(self.input_dims+self.action_dim, self.fc1_dim)
         self.fc2 = nn.Linear(self.fc1_dim, self.fc2_dim)
@@ -50,34 +43,6 @@ class CriticNetwork(nn.Module):
         f3 = 0.003
         self.q.weight.data.uniform_(-f3, f3)
         self.q.bias.data.uniform_(-f3, f3)
-        # nn.init.xavier_uniform_(self.action_value.weight)
-        # self.action_value.bias.data.fill_(0.01)
-
-    # def init_weights(self):
-    #     f1 = 1. / np.sqrt(self.fc1.weight.data.size()[0])
-    #     self.fc1.weight.data.uniform_(-f1, f1)
-    #     self.fc1.bias.data.uniform_(-f1, f1)
-    #     f2 = 1. / np.sqrt(self.fc2.weight.data.size()[0])
-    #     self.fc2.weight.data.uniform_(-f2, f2)
-    #     self.fc2.bias.data.uniform_(-f2, f2)
-    #     f3 = 0.003
-    #     self.q.weight.data.uniform_(-f3, f3)
-    #     self.q.bias.data.uniform_(-f3, f3)
-    #     f4 = 1. / np.sqrt(self.action_value.weight.data.size()[0])
-    #     self.action_value.weight.data.uniform_(-f4, f4)
-    #     self.action_value.bias.data.uniform_(-f4, f4)
-
-    # def forward(self, state, action):
-    #     state_value = self.fc1(state)
-    #     state_value = self.bn1(state_value)
-    #     state_value = F.relu(state_value)
-    #     state_value = self.fc2(state_value)
-    #     state_value = self.bn2(state_value)
-    #     action_value = self.action_value(action)
-    #     state_action_value = F.relu(T.add(state_value, action_value))
-    #     state_action_value = self.q(state_action_value)
-    #
-    #     return state_action_value
 
     def forward(self, state, action):
         state_action = T.cat([state, action], dim=1)
@@ -117,7 +82,6 @@ class ActorNetwork(nn.Module):
 
         self.init_weights()
         self.optimizer = optim.Adam(self.parameters(), lr = alpha)
-        #self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
         self.device = device
         self.to(self.device)
 
@@ -128,17 +92,6 @@ class ActorNetwork(nn.Module):
         self.fc2.bias.data.fill_(0.01)
         nn.init.xavier_uniform_(self.mu.weight)
         self.mu.bias.data.fill_(0.01)
-
-    # def init_weights(self):
-    #     f1 = 1./np.sqrt(self.fc1.weight.data.size()[0])
-    #     self.fc1.weight.data.uniform_(-f1,f1)
-    #     self.fc1.bias.data.uniform_(-f1,f1)
-    #     f2 = 1. / np.sqrt(self.fc2.weight.data.size()[0])
-    #     self.fc2.weight.data.uniform_(-f2, f2)
-    #     self.fc2.bias.data.uniform_(-f2, f2)
-    #     self.mu.weight.data.uniform_(-3e-3,3e-3)
-    #     self.mu.bias.data.uniform_(-3e-3,3e-3)
-
 
     def forward(self, state):
         x = self.fc1(state)
