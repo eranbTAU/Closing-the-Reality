@@ -7,22 +7,19 @@ import os
 from maenv.utils import average_total_reward
 
 class Trainer(object):
-    def __init__(self, params, env_func):
+    def __init__(self, params):
         self.gen_params = params['gen_params']
         self.env_params = params['env_params']
+        self.rew_scaler = self.env_params['reward_scaler']
         self.agent_params = params['agent_params']
 
-        rew_baseline = average_total_reward(
-            env_func(max_cycles=self.env_params['max_steps'],
-                             seed=self.env_params['seed'],
-                             local_ratio=self.env_params['local_ratio']),
-            max_episodes=100, max_steps=100000000)
 
-        self.logger = Logger(params, rew_baseline)
+        self.logger = Logger(params, self.rew_scaler)
 
         self.episodes = self.env_params['episodes']
         self.max_steps = self.env_params['max_steps']
         self.render = self.env_params['render']
+
 
     def run(self, env, agent):
         if self.gen_params['is_train']:
@@ -32,12 +29,11 @@ class Trainer(object):
             print('starting eval mode...')
             self.policy_eval(env, agent)
 
-     def run_train_loop(self, env, agent):
+    def run_train_loop(self, env, agent):
         if self.agent_params['load_policy'] is not None:
             print('loading saved plicy models...')
             agent.load_models()
 
-        agents = env.possible_agents
         for episode in range(1, self.episodes + 1):
             agent.noise.reset()
             obss = env.reset()
@@ -46,8 +42,8 @@ class Trainer(object):
                     env.render()
                 actions = agent.choose_action(dict_to_np(obss, np.float32))
                 obss_, rewards, dones, infos = env.step(actions)
-                for a in agents:
-                    agent.store_experience(obss[a], actions[a], rewards[a], obss_[a], dones[a])
+                for a in env.possible_agents:
+                    agent.store_experience(obss[a], actions[a], rewards[a]/self.env_params['reward_scaler'], obss_[a], dones[a])
                 q_value = agent.learn()
                 self.logger(actions, rewards, dones, infos, q_value)
                 obss = obss_
@@ -63,19 +59,20 @@ class Trainer(object):
 
         self.logger.finish()
 
+
     def policy_eval(self, env, agent):
         raise NotImplementedError
 
 
 class Logger():
-    def __init__(self, params, ave_reward):
+    def __init__(self, params, rew_baseline):
         self.params = params
         # env
         self.num_agents = params['env_params']['num_agents']
         self.max_steps = params['env_params']['max_steps']
         self.episodes = params['env_params']['episodes']
         self.is_training = params['gen_params']['is_train']
-        self.ave_reward = ave_reward
+        self.rew_scaler = self.params['env_params']['reward_scaler']
 
         # counters
         self.episode = 1
@@ -115,26 +112,20 @@ class Logger():
     def __call__(self, actions, rewards, dones, infos, q):
         self.steps += 1
         self.total_steps += 1
-        self.episode_return += np.average(rewards.values())
+        self.episode_return += np.average(list(rewards.values()))/self.rew_scaler
         self.log(actions, rewards, dones, infos, q) # each episode
 
 
     def log(self, actions, rewards, dones, infos, q):
-        # every step
-        # actions = list(actions.values())
-        # self.episode_actions.append(actions)
+        # every step:
         rewards = list(rewards.values())
         self.episode_rewards.append(rewards)
-        # infos = list(infos.values())
-        # self.episode_infos.append(infos)
         self.episode_q.append(q)
 
 
     def reset_episode(self):
-        # self.action_log.append(self.episode_actions)
         self.ep_returns.append(self.episode_return)
         self.reward_log.append(self.episode_rewards)
-        # self.info_log.append(self.episode_infos)
         self.q_log.append(self.episode_q)
 
         # every end of episode
@@ -172,19 +163,18 @@ class Logger():
             self.best_score = self.avg_score-1e-5
 
         self.train_steps.append(self.total_steps)
-        # self.action_log.append(self.episode_actions)
         self.reward_log.append(self.episode_rewards)
-        # self.info_log.append(self.episode_infos)
 
         now = time.time()
         if self.episode % self.report_every == 0: # after report_every episodes
 
             last_elapsed = round((now - self.start_time) / 60, 1)
 
-            plot_learn_curve(self.ep_returns, self.train_steps, 10,
-                                     os.path.join(self.dir,
-                                                  ('train' if self.is_training else 'eval')  + '_vs_steps_' + self.dir_name),
-                                  True)
+            plot_learn_curve(self.ep_returns,
+                             self.train_steps,
+                             10,
+                             os.path.join(self.dir, ('train' if self.is_training else 'eval')  + '_score_vs_steps_' + self.dir_name),
+                             True)
 
             self.elapsed_time += last_elapsed
             self.start_time = now
@@ -193,13 +183,12 @@ class Logger():
 
     def finish(self):
         name = os.path.split(self.dir)[0]
+        plot_learn_curve(self.ep_returns,
+                         self.train_steps,
+                         10,
+                         os.path.join(self.dir, ('train' if self.is_training else 'eval') + '_score_vs_steps_' + self.dir_name),
+                         True)
 
-        plot_learn_curve(self.ep_returns, self.train_steps, 10,
-                                 os.path.join(self.dir,
-                                              ('train' if self.is_training else 'eval') + '_vs_steps_' + self.dir_name),
-                        True)
-
-       
         print(f'saved in {name}')
         print('%d [hours] in total' % (round(self.elapsed_time / 60, 2)))
 
@@ -211,7 +200,7 @@ def plot_learn_curve(scores, x, window_size, figure_file, add_std):
         if add_std:
             std[i] = np.std(scores[max(0,i-window_size):(i+1)])
 
-    fig, ax = plt.subplots(figsize=(5, 5))
+    fig, ax = plt.subplots(figsize=(10, 5))
     # ax.set_ylim(bottom=-1, top=0)
     ax.plot(x, running_average)
     if add_std:
