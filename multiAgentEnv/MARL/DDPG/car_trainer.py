@@ -4,7 +4,6 @@ from utils import save, load, modify_action, dict_to_np
 import matplotlib.pyplot as plt
 import os
 
-from maenv.utils import average_total_reward
 
 class Trainer(object):
     def __init__(self, params):
