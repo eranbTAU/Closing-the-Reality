@@ -147,7 +147,7 @@ class Logger():
                 log['scores'] = self.ep_returns
                 log['q_values'] = self.q_log
             else:
-                log = load(self.log_filename
+                log = load(self.log_filename+'.pkl')
                 log['rewards'] += self.reward_log
                 log['scores'] = self.ep_returns
                 log['q_values'] += self.q_log
