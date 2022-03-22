@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from utils import save, load, modify_action
+from utils import save, load, modify_action, dict_to_np
 import matplotlib.pyplot as plt
 import os
 
@@ -32,21 +32,22 @@ class Trainer(object):
             print('starting eval mode...')
             self.policy_eval(env, agent)
 
-    def run_train_loop(self, env, agent):
+     def run_train_loop(self, env, agent):
         if self.agent_params['load_policy'] is not None:
             print('loading saved plicy models...')
             agent.load_models()
 
+        agents = env.possible_agents
         for episode in range(1, self.episodes + 1):
             agent.noise.reset()
             obss = env.reset()
             for t in range(self.max_steps):
                 if self.render:
                     env.render()
-                actions = agent.choose_action(obss)
-                actions_ = modify_action(actions)
-                obss_, rewards, dones, infos = env.step(actions_)
-                agent.store_experience(obss, actions, rewards, obss_, dones)
+                actions = agent.choose_action(dict_to_np(obss, np.float32))
+                obss_, rewards, dones, infos = env.step(actions)
+                for a in agents:
+                    agent.store_experience(obss[a], actions[a], rewards[a], obss_[a], dones[a])
                 q_value = agent.learn()
                 self.logger(actions, rewards, dones, infos, q_value)
                 obss = obss_
@@ -58,9 +59,9 @@ class Trainer(object):
             self.logger.reset_episode()
             if self.logger.avg_score > self.logger.best_score:
                 agent.save_models()
+            env.close()
 
         self.logger.finish()
-
 
     def policy_eval(self, env, agent):
         raise NotImplementedError
@@ -180,10 +181,10 @@ class Logger():
 
             last_elapsed = round((now - self.start_time) / 60, 1)
 
-            self.plot_learn_curve(self.ep_returns, self.train_steps, 10,
+            plot_learn_curve(self.ep_returns, self.train_steps, 10,
                                      os.path.join(self.dir,
                                                   ('train' if self.is_training else 'eval')  + '_vs_steps_' + self.dir_name),
-                                  std=True)
+                                  True)
 
             self.elapsed_time += last_elapsed
             self.start_time = now
@@ -193,26 +194,28 @@ class Logger():
     def finish(self):
         name = os.path.split(self.dir)[0]
 
-        self.plot_learn_curve(self.ep_returns, self.train_steps, 10,
+        plot_learn_curve(self.ep_returns, self.train_steps, 10,
                                  os.path.join(self.dir,
-                                              ('train' if self.is_training else 'eval') + '_vs_steps_' + self.dir_name))
+                                              ('train' if self.is_training else 'eval') + '_vs_steps_' + self.dir_name),
+                        True)
 
        
         print(f'saved in {name}')
         print('%d [hours] in total' % (round(self.elapsed_time / 60, 2)))
 
-    def plot_learn_curve(self, scores, x, window_size, figure_file, std=False):
-        running_average = np.zeros(len(scores))
-        for i,_ in enumerate(running_average):
-            running_average[i] = np.mean(scores[max(0,i-window_size):(i+1)])
-            if std:
-                std = np.std(scores[max(0,i-window_size):(i+1)])
+def plot_learn_curve(scores, x, window_size, figure_file, add_std):
+    running_average = np.zeros(len(scores))
+    std = np.zeros(len(scores))
+    for i,_ in enumerate(running_average):
+        running_average[i] = np.mean(scores[max(0,i-window_size):(i+1)])
+        if add_std:
+            std[i] = np.std(scores[max(0,i-window_size):(i+1)])
 
-        fig, ax = plt.subplots(figsize=(5, 5))
-        # ax.set_ylim(bottom=-1, top=0)
-        ax.plot(x, running_average)
-        if std:
-            plt.fill_between(x, running_average - std, running_average + std,
-                             color='gray', alpha=0.2)
-        plt.title(f'running average over {window_size} last time-steps')
-        plt.savefig(figure_file+'.png')
+    fig, ax = plt.subplots(figsize=(5, 5))
+    # ax.set_ylim(bottom=-1, top=0)
+    ax.plot(x, running_average)
+    if add_std:
+        ax.fill_between(x, running_average - std, running_average + std,
+                         color='gray', alpha=0.2)
+    plt.title(f'running average over {window_size} last time-steps')
+    plt.savefig(figure_file+'.png')
